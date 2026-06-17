@@ -19,8 +19,6 @@ function App() {
   const [isCompiling, setIsCompiling] = useState(false);
   const [output, setOutput] = useState({ stdout: '', stderr: '' });
   const [showFileMenu, setShowFileMenu] = useState(false);
-  const [fileMenuPos, setFileMenuPos] = useState({ top: 0, right: 0 });
-  const fileMenuBtnRef = useRef(null);
   const fileInputRef = useRef(null);
 
   const activeFile = files.find(f => f.id === activeFileId) || files[0];
@@ -311,9 +309,9 @@ function App() {
         <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl pointer-events-none"></div>
 
         {/* Editor Pane */}
-        <section className="w-3/5 glass-panel rounded-xl overflow-hidden flex flex-col z-10 shadow-2xl border border-white/5">
+        <section className="w-3/5 glass-panel rounded-xl flex flex-col z-10 shadow-2xl border border-white/5">
           {/* Tab Bar & ToolBar */}
-          <div className="bg-[#1e1e1e] border-b border-white/10 flex items-center justify-between relative">
+          <div className="bg-[#1e1e1e] rounded-t-xl border-b border-white/10 flex items-center justify-between relative z-50">
             <div className="flex items-center overflow-x-auto flex-1 custom-scrollbar">
               {files.map(file => (
                 <div 
@@ -350,14 +348,7 @@ function App() {
               {/* File Menu */}
               <div className="relative">
                 <button 
-                  ref={fileMenuBtnRef}
-                  onClick={() => {
-                    if (!showFileMenu && fileMenuBtnRef.current) {
-                      const rect = fileMenuBtnRef.current.getBoundingClientRect();
-                      setFileMenuPos({ top: rect.bottom + 8, right: window.innerWidth - rect.right });
-                    }
-                    setShowFileMenu(!showFileMenu);
-                  }}
+                  onClick={() => setShowFileMenu(!showFileMenu)}
                   className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold tracking-wide text-gray-300 hover:text-white bg-white/5 hover:bg-white/10 border border-white/5 hover:border-white/20 rounded-md transition-all shadow-sm"
                 >
                   <File className="w-3.5 h-3.5 text-blue-400" />
@@ -367,11 +358,8 @@ function App() {
                 
                 {showFileMenu && (
                   <>
-                    <div className="fixed inset-0 z-[9998]" onClick={() => setShowFileMenu(false)}></div>
-                    <div
-                      className="fixed w-52 bg-[#252526] border border-white/10 rounded-lg shadow-2xl z-[9999] py-1.5 overflow-hidden backdrop-blur-xl"
-                      style={{ top: fileMenuPos.top, right: fileMenuPos.right }}
-                    >
+                    <div className="fixed inset-0 z-40" onClick={() => setShowFileMenu(false)}></div>
+                    <div className="absolute right-0 mt-2 w-52 bg-[#252526] border border-white/10 rounded-lg shadow-2xl z-50 py-1.5 overflow-hidden backdrop-blur-xl">
                       <button onClick={handleNewFile} className="w-full text-left px-4 py-2 text-sm text-gray-200 hover:bg-blue-500/20 hover:text-blue-400 flex items-center gap-3 transition-colors">
                         <Plus className="w-4 h-4 text-gray-400" /> New File
                       </button>
@@ -406,7 +394,7 @@ function App() {
 
             </div>
           </div>
-          <div className="flex-1 relative">
+          <div className="flex-1 relative rounded-b-xl overflow-hidden">
             <Editor
               height="100%"
               language={activeFile ? LANGUAGES[activeFile.lang].monacoLang : 'cpp'}
