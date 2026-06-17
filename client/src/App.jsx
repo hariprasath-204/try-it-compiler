@@ -298,13 +298,13 @@ function App() {
       </header>
 
       {/* Main Content Workspace */}
-      <main className="flex-1 flex flex-col lg:flex-row p-4 gap-4 relative overflow-y-auto lg:overflow-hidden">
+      <main className="flex-1 flex flex-col lg:flex-row p-4 gap-4 relative overflow-hidden">
         {/* Decorative background glow */}
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-brand-accent/10 rounded-full blur-3xl pointer-events-none"></div>
         <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl pointer-events-none"></div>
 
         {/* Editor Pane */}
-        <section className="w-full lg:w-3/5 min-h-[50vh] lg:min-h-0 lg:h-full glass-panel rounded-xl flex flex-col z-10 shadow-2xl border border-white/5">
+        <section className="w-full lg:w-3/5 h-[60%] lg:h-full glass-panel rounded-xl flex flex-col z-10 shadow-2xl border border-white/5">
           {/* Tab Bar & ToolBar */}
           <div className="bg-[#1e1e1e] rounded-t-xl border-b border-white/10 flex items-center justify-between relative z-50">
             <div className="flex items-center overflow-x-auto flex-1 custom-scrollbar">
@@ -411,7 +411,7 @@ function App() {
         </section>
 
         {/* Output Pane */}
-        <section className="w-full lg:w-2/5 min-h-[40vh] lg:min-h-0 lg:h-full z-10 flex flex-col">
+        <section className="w-full lg:w-2/5 h-[40%] lg:h-full z-10 flex flex-col">
           <OutputConsole stdout={output.stdout} stderr={output.stderr} />
         </section>
       </main>
