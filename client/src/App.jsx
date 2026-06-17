@@ -195,7 +195,7 @@ function App() {
     setIsCompiling(true);
     setOutput({ stdout: '', stderr: '' });
     try {
-      const response = await axios.post('http://localhost:5000/api/run', {
+      const response = await axios.post('https://try-it-compiler.onrender.com/api/run', {
         lang: activeFile.lang,
         code: activeFile.code
       });
@@ -219,7 +219,7 @@ function App() {
     setIsCompiling(true);
     setOutput({ stdout: '', stderr: '' });
     try {
-      const response = await axios.post('http://localhost:5000/api/run', {
+      const response = await axios.post('https://try-it-compiler.onrender.com/api/run', {
         lang: activeFile.lang,
         code: activeFile.code
       });
