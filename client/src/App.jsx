@@ -389,24 +389,26 @@ function App() {
 
             </div>
           </div>
-          <div className="flex-1 relative rounded-b-xl overflow-hidden">
-            <Editor
-              height="100%"
-              language={activeFile ? LANGUAGES[activeFile.lang].monacoLang : 'cpp'}
-              theme="vs-dark"
-              value={activeFile ? activeFile.code : ''}
-              onChange={handleCodeChange}
-              options={{
-                minimap: { enabled: false },
-                fontSize: 14,
-                fontFamily: "'JetBrains Mono', 'Fira Code', monospace",
-                padding: { top: 16 },
-                scrollBeyondLastLine: false,
-                smoothScrolling: true,
-                cursorBlinking: "smooth",
-                renderLineHighlight: "all"
-              }}
-            />
+          <div className="flex-1 relative rounded-b-xl overflow-hidden min-h-0">
+            <div className="absolute inset-0">
+              <Editor
+                height="100%"
+                language={activeFile ? LANGUAGES[activeFile.lang].monacoLang : 'cpp'}
+                theme="vs-dark"
+                value={activeFile ? activeFile.code : ''}
+                onChange={handleCodeChange}
+                options={{
+                  minimap: { enabled: false },
+                  fontSize: 14,
+                  fontFamily: "'JetBrains Mono', 'Fira Code', monospace",
+                  padding: { top: 16 },
+                  scrollBeyondLastLine: false,
+                  smoothScrolling: true,
+                  cursorBlinking: "smooth",
+                  renderLineHighlight: "all"
+                }}
+              />
+            </div>
           </div>
         </section>
 
