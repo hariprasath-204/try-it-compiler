@@ -244,18 +244,18 @@ function App() {
       />
 
       {/* Header */}
-      <header className="glass-panel border-b border-white/10 px-6 py-4 flex items-center justify-between z-10 relative">
+      <header className="glass-panel border-b border-white/10 px-4 py-3 sm:px-6 sm:py-4 flex flex-wrap items-center justify-between gap-3 z-10 relative">
         <div className="flex items-center gap-3">
           <div className="bg-brand-accent/20 p-2 rounded-lg">
             <Code2 className="w-6 h-6 text-brand-accent" />
           </div>
-          <h1 className="text-xl font-bold tracking-tight bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
+          <h1 className="text-lg sm:text-xl font-bold tracking-tight bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
             TRY IT COMPILER
           </h1>
         </div>
 
         <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2 glass-panel px-3 py-1.5 rounded-lg">
+          <div className="flex items-center gap-2 glass-panel px-2 py-1.5 sm:px-3 sm:py-1.5 rounded-lg flex-1 sm:flex-none">
             <Settings2 className="w-4 h-4 text-gray-400" />
             <select
               className="bg-transparent text-sm font-medium text-white outline-none cursor-pointer border-none"
@@ -274,7 +274,7 @@ function App() {
           <button
             onClick={handleRunCode}
             disabled={isCompiling}
-            className={`flex items-center gap-2 px-5 py-2 rounded-lg font-semibold text-sm transition-all duration-300 shadow-lg ${isCompiling
+            className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 sm:px-5 py-2 rounded-lg font-semibold text-sm transition-all duration-300 shadow-lg ${isCompiling
                 ? 'bg-brand-accent/50 cursor-not-allowed opacity-80'
                 : 'bg-brand-accent hover:bg-blue-400 hover:shadow-brand-accent/25 hover:-translate-y-0.5'
               }`}
@@ -298,13 +298,13 @@ function App() {
       </header>
 
       {/* Main Content Workspace */}
-      <main className="flex-1 min-h-0 flex flex-col lg:flex-row p-4 gap-4 relative overflow-hidden">
+      <main className="flex-1 min-h-0 flex flex-col lg:flex-row p-2 sm:p-4 gap-2 sm:gap-4 relative overflow-y-auto lg:overflow-hidden">
         {/* Decorative background glow */}
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-brand-accent/10 rounded-full blur-3xl pointer-events-none"></div>
         <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl pointer-events-none"></div>
 
         {/* Editor Pane */}
-        <section className="w-full lg:w-3/5 flex-[3] lg:flex-none min-h-0 glass-panel rounded-xl flex flex-col z-10 shadow-2xl border border-white/5">
+        <section className="w-full lg:w-3/5 flex-[3] lg:flex-none min-h-[50vh] lg:min-h-0 glass-panel rounded-xl flex flex-col z-10 shadow-2xl border border-white/5">
           {/* Tab Bar & ToolBar */}
           <div className="bg-[#1e1e1e] rounded-t-xl border-b border-white/10 flex items-center justify-between relative z-50">
             <div className="flex items-center overflow-x-auto flex-1 custom-scrollbar">
@@ -411,7 +411,7 @@ function App() {
         </section>
 
         {/* Output Pane */}
-        <section className="w-full lg:w-2/5 flex-[2] lg:flex-none min-h-0 z-10 flex flex-col">
+        <section className="w-full lg:w-2/5 flex-[2] lg:flex-none min-h-[40vh] lg:min-h-0 z-10 flex flex-col">
           <OutputConsole stdout={output.stdout} stderr={output.stderr} />
         </section>
       </main>
