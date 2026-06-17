@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  compiler-cpp:
+    build:
+      context: ./containers/cpp
+    image: compiler-cpp
+
+  compiler-c:
+    build:
+      context: ./containers/c
+    image: compiler-c
+
+  compiler-python:
+    build:
+      context: ./containers/python
+    image: compiler-python
+
+  compiler-java:
+    build:
+      context: ./containers/java
+    image: compiler-java
+
+  compiler-r:
+    build:
+      context: ./containers/r
+    image: compiler-r
