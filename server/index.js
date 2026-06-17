@@ -9,13 +9,13 @@ app.use(cors());
 app.use(express.json());
 
 app.post('/api/run', async (req, res) => {
-  const { lang, code } = req.body;
+  const { lang, code, stdin } = req.body;
   if (!lang || !code) {
     return res.status(400).json({ error: 'Language and code are required.' });
   }
 
   try {
-    const result = await executeCode(lang, code);
+    const result = await executeCode(lang, code, stdin || '');
     res.json(result);
   } catch (err) {
     res.status(500).json({ error: 'Execution service failed.', details: err.message });

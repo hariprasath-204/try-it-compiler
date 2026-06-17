@@ -3,6 +3,7 @@ import Editor from '@monaco-editor/react';
 import { Play, Code2, Settings2, FileCode2, X, Plus, FolderOpen, Save, Download, CheckCircle, ChevronDown, File } from 'lucide-react';
 import axios from 'axios';
 import OutputConsole from './components/OutputConsole';
+import { executeCodeDirectly } from './services/execution';
 
 const LANGUAGES = {
   cpp: { name: 'C++', monacoLang: 'cpp', extension: '.cpp', boilerplate: '#include <iostream>\n\nint main() {\n    std::cout << "Hello, World!" << std::endl;\n    return 0;\n}' },
@@ -18,6 +19,7 @@ function App() {
   const [activeFileId, setActiveFileId] = useState('1');
   const [isCompiling, setIsCompiling] = useState(false);
   const [output, setOutput] = useState({ stdout: '', stderr: '' });
+  const [stdin, setStdin] = useState('');
   const [showFileMenu, setShowFileMenu] = useState(false);
   const fileInputRef = useRef(null);
 
@@ -193,13 +195,10 @@ function App() {
     setIsCompiling(true);
     setOutput({ stdout: '', stderr: '' });
     try {
-      const response = await axios.post('https://try-it-compiler.onrender.com/api/run', {
-        lang: activeFile.lang,
-        code: activeFile.code
-      });
+      const result = await executeCodeDirectly(activeFile.lang, activeFile.code, stdin);
       setOutput({
-        stdout: response.data.stdout || '',
-        stderr: response.data.stderr || ''
+        stdout: result.stdout || '',
+        stderr: result.stderr || ''
       });
     } catch (error) {
       console.error(error);
@@ -217,12 +216,9 @@ function App() {
     setIsCompiling(true);
     setOutput({ stdout: '', stderr: '' });
     try {
-      const response = await axios.post('https://try-it-compiler.onrender.com/api/run', {
-        lang: activeFile.lang,
-        code: activeFile.code
-      });
-      if (response.data.stderr) {
-          setOutput({ stdout: '', stderr: response.data.stderr });
+      const result = await executeCodeDirectly(activeFile.lang, activeFile.code, '');
+      if (result.stderr) {
+          setOutput({ stdout: '', stderr: result.stderr });
       } else {
           setOutput({ stdout: '✅ Compiled Successfully. No syntax errors found.', stderr: '' });
       }
@@ -417,7 +413,7 @@ function App() {
 
         {/* Output Pane */}
         <section className="w-2/5 z-10 h-full flex flex-col">
-          <OutputConsole stdout={output.stdout} stderr={output.stderr} />
+          <OutputConsole stdout={output.stdout} stderr={output.stderr} stdin={stdin} onStdinChange={setStdin} />
         </section>
       </main>
     </div>

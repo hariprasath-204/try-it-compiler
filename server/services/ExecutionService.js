@@ -13,9 +13,9 @@ if (!fs.existsSync(TEMP_DIR)) {
 // 1. Judge0 Provider
 // ----------------------------------------------------
 const judge0Map = { cpp: 54, c: 50, python: 100, java: 91 };
-const executeJudge0 = (lang, code) => new Promise((resolve, reject) => {
+const executeJudge0 = (lang, code, stdin) => new Promise((resolve, reject) => {
   if (!judge0Map[lang]) return reject(new Error('Unsupported language for Judge0'));
-  const data = JSON.stringify({ source_code: code, language_id: judge0Map[lang] });
+  const data = JSON.stringify({ source_code: code, language_id: judge0Map[lang], stdin: stdin });
   const req = https.request({
     hostname: 'ce.judge0.com', path: '/submissions?base64_encoded=false&wait=true', method: 'POST',
     headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(data) }
@@ -38,9 +38,9 @@ const executeJudge0 = (lang, code) => new Promise((resolve, reject) => {
 // 2. Paiza Provider
 // ----------------------------------------------------
 const paizaMap = { cpp: 'cpp', c: 'c', python: 'python3', java: 'java' };
-const executePaiza = (lang, code) => new Promise((resolve, reject) => {
+const executePaiza = (lang, code, stdin) => new Promise((resolve, reject) => {
   if (!paizaMap[lang]) return reject(new Error('Unsupported language for Paiza'));
-  const data = querystring.stringify({ source_code: code, language: paizaMap[lang], api_key: 'guest' });
+  const data = querystring.stringify({ source_code: code, language: paizaMap[lang], input: stdin, api_key: 'guest' });
   const req = https.request({
     hostname: 'api.paiza.io', path: '/runners/create', method: 'POST',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'Content-Length': Buffer.byteLength(data) }
@@ -83,9 +83,9 @@ const executePaiza = (lang, code) => new Promise((resolve, reject) => {
 // 3. Wandbox Provider
 // ----------------------------------------------------
 const wandboxMap = { cpp: 'gcc-head', c: 'gcc-head-c', python: 'cpython-3.14.0', java: 'openjdk-jdk-22+36' };
-const executeWandbox = (lang, code) => new Promise((resolve, reject) => {
+const executeWandbox = (lang, code, stdin) => new Promise((resolve, reject) => {
   if (!wandboxMap[lang]) return reject(new Error('Unsupported language for Wandbox'));
-  const data = JSON.stringify({ code: code, compiler: wandboxMap[lang] });
+  const data = JSON.stringify({ code: code, compiler: wandboxMap[lang], stdin: stdin });
   const req = https.request({
     hostname: 'wandbox.org', path: '/api/compile.json', method: 'POST',
     headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(data) }
@@ -108,7 +108,7 @@ const executeWandbox = (lang, code) => new Promise((resolve, reject) => {
 // ----------------------------------------------------
 // Main Execute Logic with Failover Array
 // ----------------------------------------------------
-const executeCode = async (lang, code) => {
+const executeCode = async (lang, code, stdin) => {
   const providers = [
     { name: 'Judge0', fn: executeJudge0 },
     { name: 'Paiza', fn: executePaiza },
@@ -118,7 +118,7 @@ const executeCode = async (lang, code) => {
   for (const provider of providers) {
     try {
       console.log(`Attempting execution with ${provider.name}...`);
-      const result = await provider.fn(lang, code);
+      const result = await provider.fn(lang, code, stdin);
       return result; // If successful, return immediately
     } catch (error) {
       console.error(`Provider ${provider.name} failed:`, error.message);
