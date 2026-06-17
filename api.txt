@@ -1,0 +1,47 @@
+Compiler API Fallback System Documentation
+=========================================
+Our online compiler architecture implements a highly scalable, robust 3-Tier Fallback mechanism specifically designed to handle extreme concurrent load (e.g., 200+ students simultaneously executing code) without suffering from IP rate-limit bans.
+
+The execution logic runs entirely on the **Client-Side (Frontend)** in `client/src/services/execution.js`. This guarantees that all API requests are distributed across the individual IP addresses of the 200 students' computers, effectively avoiding strict per-IP rate limits that would normally crash a single centralized backend server.
+
+Below are the detailed limits and specifications for all 3 remote compiler APIs used in this system:
+
+----------------------------------------------------
+1. Judge0 CE Public API (Primary Provider)
+----------------------------------------------------
+- Endpoint: https://ce.judge0.com/submissions
+- Role: Primary compiler (First Attempt). Extremely fast, secure, and reliable.
+- Documentation: https://ce.judge0.com/
+- Rate Limits (Per IP Address):
+  - Max 50 requests per day.
+  - Max 1 request per second.
+- Why it works for 200 students: Because requests are made from the students' local browsers (React Frontend), Judge0 sees 200 separate IP addresses. Each student gets 50 free executions per day without affecting others.
+- Used for: C++, C, Python, Java.
+
+----------------------------------------------------
+2. Paiza.io API (Secondary Fallback)
+----------------------------------------------------
+- Endpoint: https://api.paiza.io/runners/create
+- Role: First fallback. Automatically triggers instantly if Judge0 reaches its daily limit or goes offline.
+- Documentation: https://paiza.io/en/projects/new
+- Rate Limits (Per IP Address):
+  - Undisclosed exact limit, but heavily rate-limits rapid automated requests from a single IP.
+  - Allows robust guest access (`api_key=guest`) for normal user-paced browser executions.
+- Used for: C++, C, Python3, Java.
+
+----------------------------------------------------
+3. Wandbox API (Tertiary Fallback)
+----------------------------------------------------
+- Endpoint: https://wandbox.org/api/compile.json
+- Role: Final failsafe. Used if both Judge0 and Paiza fail or hit limits.
+- Documentation: https://github.com/melpon/wandbox/tree/master/kennel
+- Rate Limits (Per IP Address):
+  - Generous limits, intended for casual and open-source usage.
+  - Susceptible to "OCI runtime error: crun: clone: Resource temporarily unavailable" during massive global traffic spikes due to Docker thread exhaustion.
+- Used for: C++ (gcc-head), C (gcc-head-c), Python (cpython-3.14.0), Java (openjdk-jdk-22+36).
+
+
+----------------------------------------------------
+Summary of Scaling Strategy
+----------------------------------------------------
+By dynamically falling through Judge0 -> Paiza -> Wandbox *directly from the browser*, this architecture provides theoretically limitless execution scaling for zero cost, eliminating all single points of failure.

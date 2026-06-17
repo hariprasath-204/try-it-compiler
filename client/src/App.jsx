@@ -19,7 +19,6 @@ function App() {
   const [activeFileId, setActiveFileId] = useState('1');
   const [isCompiling, setIsCompiling] = useState(false);
   const [output, setOutput] = useState({ stdout: '', stderr: '' });
-  const [stdin, setStdin] = useState('');
   const [showFileMenu, setShowFileMenu] = useState(false);
   const fileInputRef = useRef(null);
 
@@ -195,7 +194,7 @@ function App() {
     setIsCompiling(true);
     setOutput({ stdout: '', stderr: '' });
     try {
-      const result = await executeCodeDirectly(activeFile.lang, activeFile.code, stdin);
+      const result = await executeCodeDirectly(activeFile.lang, activeFile.code, '');
       setOutput({
         stdout: result.stdout || '',
         stderr: result.stderr || ''
@@ -413,7 +412,7 @@ function App() {
 
         {/* Output Pane */}
         <section className="w-2/5 z-10 h-full flex flex-col">
-          <OutputConsole stdout={output.stdout} stderr={output.stderr} stdin={stdin} onStdinChange={setStdin} />
+          <OutputConsole stdout={output.stdout} stderr={output.stderr} />
         </section>
       </main>
     </div>
