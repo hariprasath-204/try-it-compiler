@@ -83,13 +83,31 @@ const executeWandbox = async (lang, code, stdin) => {
 };
 
 // ----------------------------------------------------
+// 4-10. Commercial / Premium Providers (Require API Keys)
+// ----------------------------------------------------
+const executeJDoodle = async (lang, code, stdin) => { throw new Error('JDoodle requires Client ID and Client Secret'); };
+const executeSphereEngine = async (lang, code, stdin) => { throw new Error('Sphere Engine requires API Token'); };
+const executeHackerEarth = async (lang, code, stdin) => { throw new Error('HackerEarth requires Client Secret'); };
+const executeJudge0Premium = async (lang, code, stdin) => { throw new Error('Judge0 Premium requires RapidAPI Key'); };
+const executeGlotIo = async (lang, code, stdin) => { throw new Error('Glot.io requires API Token'); };
+const executeCodeX = async (lang, code, stdin) => { throw new Error('CodeX API currently has no healthy upstream'); };
+const executeOneCompiler = async (lang, code, stdin) => { throw new Error('OneCompiler requires CSRF token authentication'); };
+
+// ----------------------------------------------------
 // Main Execute Logic with Failover Array
 // ----------------------------------------------------
 export const executeCodeDirectly = async (lang, code, stdin) => {
   const providers = [
     { name: 'Judge0', fn: executeJudge0 },
     { name: 'Paiza', fn: executePaiza },
-    { name: 'Wandbox', fn: executeWandbox }
+    { name: 'Wandbox', fn: executeWandbox },
+    { name: 'JDoodle (Commercial)', fn: executeJDoodle },
+    { name: 'Sphere Engine (Commercial)', fn: executeSphereEngine },
+    { name: 'HackerEarth (Commercial)', fn: executeHackerEarth },
+    { name: 'Judge0 Premium (Commercial)', fn: executeJudge0Premium },
+    { name: 'Glot.io (Commercial)', fn: executeGlotIo },
+    { name: 'CodeX', fn: executeCodeX },
+    { name: 'OneCompiler', fn: executeOneCompiler }
   ];
 
   for (const provider of providers) {
