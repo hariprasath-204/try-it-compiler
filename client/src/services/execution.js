@@ -23,7 +23,29 @@ const executeJudge0 = async (lang, code, stdin) => {
 };
 
 // ----------------------------------------------------
-// 2. Paiza Provider
+// 2. Judge0 Extra CE Public Provider (Additional Free Fallback)
+// ----------------------------------------------------
+const extraJudge0Map = { cpp: 2, c: 1, python: 28, java: 4 }; // 2: C++ (Clang), 1: C (Clang), 28: Python 3.10, 4: Java 14
+const executeJudge0Extra = async (lang, code, stdin) => {
+  if (!extraJudge0Map[lang]) throw new Error('Unsupported language for Judge0 Extra');
+  
+  const response = await axios.post('https://extra-ce.judge0.com/submissions?base64_encoded=false&wait=true', {
+    source_code: code,
+    language_id: extraJudge0Map[lang],
+    stdin: stdin
+  }, {
+    headers: { 'Content-Type': 'application/json' }
+  });
+
+  const result = response.data;
+  return { 
+    stdout: result.stdout || '', 
+    stderr: result.stderr || result.compile_output || result.message || '' 
+  };
+};
+
+// ----------------------------------------------------
+// 3. Paiza Provider
 // ----------------------------------------------------
 const paizaMap = { cpp: 'cpp', c: 'c', python: 'python3', java: 'java' };
 const executePaiza = async (lang, code, stdin) => {
@@ -99,6 +121,7 @@ const executeOneCompiler = async (lang, code, stdin) => { throw new Error('OneCo
 export const executeCodeDirectly = async (lang, code, stdin) => {
   const providers = [
     { name: 'Judge0', fn: executeJudge0 },
+    { name: 'Judge0 Extra', fn: executeJudge0Extra },
     { name: 'Paiza', fn: executePaiza },
     { name: 'Wandbox', fn: executeWandbox },
     { name: 'JDoodle (Commercial)', fn: executeJDoodle },
